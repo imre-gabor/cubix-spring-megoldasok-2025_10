@@ -1,11 +1,14 @@
 package com.cubixedu.hr.sample.web;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +21,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cubixedu.hr.sample.dto.EmployeeDto;
+import com.cubixedu.hr.sample.model.Employee;
+import com.cubixedu.hr.sample.service.EmployeeService;
 
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
 	private Map<Long, EmployeeDto> employees = new HashMap<>();
+	
+	@Autowired
+	private EmployeeService employeeService;
+/*	
+	private AtomicLong nextId = new AtomicLong(
+			employees.values().stream().max(Comparator.comparing(EmployeeDto::getId))
+				.orElse(new EmployeeDto(0, null, null, 0, null))			
+				.getId() + 1
+			);
+	*/
+	//private long nextId = employees.values().stream().max(Comparator.comparing(EmployeeDto::getId))
+		//	.orElse(new EmployeeDto(0, null, null, 0, null))			
+			//.getId() + 1;
 	
 	
 	//1. megoldás paraméter nélküli és paraméteres URL leképezésre
@@ -63,7 +81,10 @@ public class EmployeeController {
 	public ResponseEntity<EmployeeDto> create(@RequestBody EmployeeDto employee) {
 		if(employees.containsKey(employee.getId()))
 			return ResponseEntity.badRequest().build();
-			
+		
+//		long newId = nextId.getAndIncrement();
+//		employee.setId(newId);
+		//nextId = nextId + 1;
 		employees.put(employee.getId(), employee);
 		return ResponseEntity.ok(employee);
 	}
@@ -82,6 +103,11 @@ public class EmployeeController {
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable long id) {
 		employees.remove(id);
+	}
+	
+	@PostMapping("/payRaise")
+	public int getPayRaisePercent(@RequestBody Employee employee) {
+		return employeeService.getPayRaisePercent(employee);
 	}
 	
 }
