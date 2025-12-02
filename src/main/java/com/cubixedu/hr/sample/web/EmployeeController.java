@@ -29,6 +29,7 @@ public class EmployeeController {
 	
 	@Autowired
 	private EmployeeService employeeService;
+	
 /*	
 	private AtomicLong nextId = new AtomicLong(
 			employees.values().stream().max(Comparator.comparing(EmployeeDto::getId))
@@ -61,7 +62,7 @@ public class EmployeeController {
 	public List<EmployeeDto> getEmployees(@RequestParam Optional<Integer> minSalary){
 		return minSalary.isEmpty() 
 				? employeeMapper.employeesToDtos(employeeService.findAll())
-				: employeeMapper.employeesToDtos(null/*employeeRepository.findBySalaryGreaterThan(minSalary)*/);
+				: employeeMapper.employeesToDtos(employeeService.findBySalaryGreaterThan(minSalary.get()));
 	}
 
 	
