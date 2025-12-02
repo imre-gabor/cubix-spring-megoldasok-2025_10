@@ -2,6 +2,8 @@ package com.cubixedu.hr.sample.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -14,7 +16,7 @@ import com.cubixedu.hr.sample.config.HrConfigProperties.Smart;
 import com.cubixedu.hr.sample.model.Employee;
 
 @Service
-public class SmartEmployeeService implements EmployeeService {
+public class SmartEmployeeService extends AbstractEmployeeService {
 
 	@Autowired
 	HrConfigProperties config;
