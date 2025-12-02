@@ -22,6 +22,8 @@ import com.cubixedu.hr.sample.mapper.EmployeeMapper;
 import com.cubixedu.hr.sample.model.Employee;
 import com.cubixedu.hr.sample.service.EmployeeService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -76,13 +78,13 @@ public class EmployeeController {
 	}
 	
 	@PostMapping
-	public EmployeeDto create(@RequestBody EmployeeDto employeeDto) {
+	public EmployeeDto create(@RequestBody @Valid EmployeeDto employeeDto) {
 		return employeeMapper.employeeToDto(employeeService.save(employeeMapper.dtoToEmployee(employeeDto)));
 	}
 	
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<EmployeeDto> update(@PathVariable long id, @RequestBody EmployeeDto employeeDto) {
+	public ResponseEntity<EmployeeDto> update(@PathVariable long id, @RequestBody @Valid EmployeeDto employeeDto) {
 		employeeDto.setId(id);
 		Employee updatedEmployee = employeeService.update(employeeMapper.dtoToEmployee(employeeDto));
 		if (updatedEmployee == null) {

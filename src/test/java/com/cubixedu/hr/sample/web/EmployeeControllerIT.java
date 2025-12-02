@@ -30,6 +30,7 @@ public class EmployeeControllerIT {
 		List<EmployeeDto> employeesBefore = getAllEmployees();
 
 		EmployeeDto newEmployee = new EmployeeDto(0L, "ABC", "student", 200000, LocalDateTime.of(2019, 01, 01, 8, 0, 0));
+		
 		saveEmployee(newEmployee)
 		.expectStatus()
 		.isOk();
