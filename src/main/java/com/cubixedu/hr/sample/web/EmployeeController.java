@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,12 +24,14 @@ import com.cubixedu.hr.sample.dto.EmployeeDto;
 import com.cubixedu.hr.sample.mapper.EmployeeMapper;
 import com.cubixedu.hr.sample.model.Employee;
 import com.cubixedu.hr.sample.service.EmployeeService;
-
+import com.cubixedu.hr.sample.service.SalaryService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
+
+    private final SalaryService salaryService;
 
 	
 	@Autowired
@@ -45,6 +50,10 @@ public class EmployeeController {
 	
 	@Autowired
 	private EmployeeMapper employeeMapper;
+
+    EmployeeController(SalaryService salaryService) {
+        this.salaryService = salaryService;
+    }
 	
 	//1. megoldás paraméter nélküli és paraméteres URL leképezésre
 //	@GetMapping
@@ -61,10 +70,16 @@ public class EmployeeController {
 
 	//2. megoldás
 	@GetMapping
-	public List<EmployeeDto> getEmployees(@RequestParam Optional<Integer> minSalary){
-		return minSalary.isEmpty() 
-				? employeeMapper.employeesToDtos(employeeService.findAll())
-				: employeeMapper.employeesToDtos(employeeService.findBySalaryGreaterThan(minSalary.get()));
+	public List<EmployeeDto> getEmployees(@RequestParam Optional<Integer> minSalary, @SortDefault("employeeId") Pageable pageable){
+		if(minSalary.isEmpty())
+			return employeeMapper.employeesToDtos(employeeService.findAll(pageable).getContent());
+		
+		Page<Employee> page = employeeService.findBySalaryGreaterThan(minSalary.get(), pageable);
+		System.out.println(page.getTotalElements());
+		System.out.println(page.getTotalPages());
+		System.out.println(page.isFirst());
+		System.out.println(page.isLast());
+		return employeeMapper.employeesToDtos(page.getContent());  
 	}
 
 	
@@ -103,5 +118,4 @@ public class EmployeeController {
 	public int getPayRaisePercent(@RequestBody Employee employee) {
 		return employeeService.getPayRaisePercent(employee);
 	}
-	
 }

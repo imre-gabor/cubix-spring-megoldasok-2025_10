@@ -1,5 +1,7 @@
 package com.cubixedu.hr.sample.model;
 
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -49,6 +51,23 @@ public class PositionDetailsByCompany {
 
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PositionDetailsByCompany other = (PositionDetailsByCompany) obj;
+		return id == other.id;
 	}
 	
 	

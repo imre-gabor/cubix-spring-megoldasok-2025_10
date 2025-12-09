@@ -3,6 +3,9 @@ package com.cubixedu.hr.sample.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.cubixedu.hr.sample.model.Employee;
 
 public interface EmployeeService {
@@ -13,11 +16,13 @@ public interface EmployeeService {
 	
 	public List<Employee> findAll();
 	
+	public Page<Employee> findAll(Pageable pageable);
+	
 	public Optional<Employee> findById(long id);
 	
 	public void delete(long id);
 
 	int getPayRaisePercent(Employee employee);
 
-	public List<Employee> findBySalaryGreaterThan(Integer minSalary);
+	public Page<Employee> findBySalaryGreaterThan(Integer minSalary, Pageable pageable);
 }
