@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.cubixedu.hr.sample.config.HrConfigProperties;
 import com.cubixedu.hr.sample.config.HrConfigProperties.Smart;
 import com.cubixedu.hr.sample.model.Employee;
+import com.cubixedu.hr.sample.service.InitDbService;
 import com.cubixedu.hr.sample.service.SalaryService;
 
 @SpringBootApplication
@@ -21,6 +22,9 @@ public class HrApplication implements CommandLineRunner {
 	
 	@Autowired
 	HrConfigProperties config;
+	
+	@Autowired
+	InitDbService initDbService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HrApplication.class, args);
@@ -29,6 +33,9 @@ public class HrApplication implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
+		
+		initDbService.initDb();
+		
 		Smart smartConfig = config.getSalary().getSmart();
 		for (Double limit : 
 				smartConfig.getLimits().keySet()

@@ -20,7 +20,9 @@ import com.cubixedu.hr.sample.dto.CompanyDto;
 import com.cubixedu.hr.sample.dto.EmployeeDto;
 import com.cubixedu.hr.sample.mapper.CompanyMapper;
 import com.cubixedu.hr.sample.mapper.EmployeeMapper;
+import com.cubixedu.hr.sample.model.AverageSalaryByPosition;
 import com.cubixedu.hr.sample.model.Company;
+import com.cubixedu.hr.sample.repository.CompanyRepository;
 import com.cubixedu.hr.sample.service.CompanyService;
 
 @RestController
@@ -35,6 +37,9 @@ public class CompanyController {
 	
 	@Autowired
 	private CompanyService companyService;
+	
+	@Autowired
+	private CompanyRepository companyRepository;
 	
 	//1. megoldás a full paraméter kezelésére
 	@GetMapping
@@ -108,6 +113,39 @@ public class CompanyController {
 	public CompanyDto replaceEmployees(@PathVariable long id, @RequestBody List<EmployeeDto> newEmployees){
 		Company company = companyService.replaceEmployees(id, employeeMapper.dtosToEmployees(newEmployees));
 		return companyMapper.companyToDto(company);
+	}
+	
+	
+	@GetMapping(params = "aboveSalary")
+	public List<CompanyDto> getCompaniesAboveSalary(@RequestParam int aboveSalary,
+			@RequestParam Optional<Boolean> full) {
+		List<Company> filteredCompanies = companyRepository.findByEmployeeWithSalaryHigherThan(aboveSalary);
+		return mapCompanies(filteredCompanies, full);
+	}
+
+	@GetMapping(params = "aboveEmployeeCount")
+	public List<CompanyDto> getCompaniesAboveEmployeeCount(@RequestParam int aboveEmployeeCount,
+			@RequestParam Optional<Boolean> full) {
+		List<Company> filteredCompanies = companyRepository.findByEmployeeCountHigherThan(aboveEmployeeCount);
+		return mapCompanies(filteredCompanies, full);
+	}
+
+	@GetMapping("/{id}/salaryStats")
+	public List<AverageSalaryByPosition> getSalaryStatsById(@PathVariable long id) {
+		return companyRepository.findAverageSalariesByPosition(id);
+	}
+
+	private List<CompanyDto> mapCompanies(List<Company> companies, Optional<Boolean> full) {
+		if (full.orElse(false)) {
+			return companyMapper.companiesToDtos(companies);
+		} else {
+			return companyMapper.companiesToSummaryDtos(companies);
+		}
+	}
+
+	private Company getCompanyOrThrow(long id) {
+		return companyService.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 	
 }
