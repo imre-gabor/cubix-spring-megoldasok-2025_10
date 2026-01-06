@@ -48,8 +48,9 @@ public class CompanyController {
 	//1. megoldás a full paraméter kezelésére
 	@GetMapping
 	public List<CompanyDto> getCompanies(@RequestParam Optional<Boolean> full) {
-		List<Company> companies = companyService.findAll();
-		return full.orElse(false)
+		Boolean isFull = full.orElse(false);
+		List<Company> companies = companyService.findAll(isFull);
+		return isFull
 				? companyMapper.companiesToDtos(companies)
 				: companyMapper.companiesToSummaryDtos(companies);
 	}
@@ -73,8 +74,9 @@ public class CompanyController {
 	
 	@GetMapping("/{id}")
 	public CompanyDto findById(@PathVariable long id, @RequestParam Optional<Boolean> full) {
-		Company company = companyService.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-		return full.orElse(false)
+		Boolean isFull = full.orElse(false);
+		Company company = companyService.findById(id, isFull).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		return isFull
 				? companyMapper.companyToDto(company)
 				: companyMapper.companyToSummaryDto(company);
 	}
@@ -152,11 +154,6 @@ public class CompanyController {
 		} else {
 			return companyMapper.companiesToSummaryDtos(companies);
 		}
-	}
-
-	private Company getCompanyOrThrow(long id) {
-		return companyService.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 	
 }

@@ -3,6 +3,7 @@ package com.cubixedu.hr.sample.service;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,9 @@ public class InitDbService {
 	@Autowired
 	HolidayRequestRepository holidayRequestRepository;
 	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
 	
 	public void clearDb() {
 		positionDetailsByCompanyRepository.deleteAllInBatch();
@@ -51,8 +55,13 @@ public class InitDbService {
 		Position tester = positionRepository.save(new Position("tesztelő", Qualification.HIGH_SCHOOL));
 		
 		Employee newEmployee1 = employeeRepository.save(new Employee(null, "ssdf", developer, 200000, LocalDateTime.now()));
+		newEmployee1.setUsername("user1");
+		newEmployee1.setPassword(passwordEncoder.encode("pass"));
 		
 		Employee newEmployee2 = employeeRepository.save(new Employee(null, "t35", tester, 200000, LocalDateTime.now()));
+		newEmployee2.setUsername("user2");
+		newEmployee2.setPassword(passwordEncoder.encode("pass"));
+		newEmployee1.setManager(newEmployee2);
 
 		Company newCompany = companyRepository.save(new Company(null, 10, "sdfsd", "", null));
 		newCompany.addEmployee(newEmployee2);
