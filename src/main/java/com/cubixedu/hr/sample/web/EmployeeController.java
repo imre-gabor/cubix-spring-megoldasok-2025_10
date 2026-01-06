@@ -31,9 +31,6 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-    private final SalaryService salaryService;
-
-	
 	@Autowired
 	private EmployeeService employeeService;
 	
@@ -50,10 +47,6 @@ public class EmployeeController {
 	
 	@Autowired
 	private EmployeeMapper employeeMapper;
-
-    EmployeeController(SalaryService salaryService) {
-        this.salaryService = salaryService;
-    }
 	
 	//1. megoldás paraméter nélküli és paraméteres URL leképezésre
 //	@GetMapping
@@ -118,4 +111,9 @@ public class EmployeeController {
 	public int getPayRaisePercent(@RequestBody Employee employee) {
 		return employeeService.getPayRaisePercent(employee);
 	}
+	@PostMapping("/search")
+	public List<EmployeeDto> findByExample(@RequestBody EmployeeDto example) {
+		return employeeMapper.employeesToDtos(employeeService.findEmployeesByExample(employeeMapper.dtoToEmployee(example)));
+	}
+
 }

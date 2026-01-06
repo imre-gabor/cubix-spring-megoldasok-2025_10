@@ -1,7 +1,6 @@
 package com.cubixedu.hr.sample;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -33,7 +32,7 @@ public class HrApplication implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		
+		initDbService.clearDb();
 		initDbService.initDb();
 		
 		Smart smartConfig = config.getSalary().getSmart();

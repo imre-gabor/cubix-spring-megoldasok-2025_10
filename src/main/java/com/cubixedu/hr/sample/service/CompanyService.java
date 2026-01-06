@@ -10,8 +10,6 @@ import com.cubixedu.hr.sample.model.Employee;
 import com.cubixedu.hr.sample.repository.CompanyRepository;
 import com.cubixedu.hr.sample.repository.EmployeeRepository;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class CompanyService {
 
