@@ -39,7 +39,7 @@ public class InitDbService {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	
+	@Transactional
 	public void clearDb() {
 		positionDetailsByCompanyRepository.deleteAllInBatch();
 		holidayRequestRepository.deleteAllInBatch();

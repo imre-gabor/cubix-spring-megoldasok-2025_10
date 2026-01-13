@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,9 @@ public class Employee {
 	private Position position;
 	@ManyToOne
 	private Employee manager;
+	
+	@OneToMany(mappedBy = "manager")
+	private Set<Employee> managedEmployees;
 	
 	private String username;
 	private String password;
@@ -153,6 +157,14 @@ public class Employee {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Set<Employee> getManagedEmployees() {
+		return managedEmployees;
+	}
+
+	public void setManagedEmployees(Set<Employee> managedEmployees) {
+		this.managedEmployees = managedEmployees;
 	}
 
 }
